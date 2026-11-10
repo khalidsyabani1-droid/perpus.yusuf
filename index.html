@@ -4,101 +4,153 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Perpustakaan Digital SMK Muhammadiyah 1 Muntilan</title>
+<title>Perpustakaan Digital | SMK Muhammadiyah 1 Muntilan</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+
 <style>
+:root {
+  --green: #126b50;
+  --dark: #104b3b;
+  --light: #e9f4ee;
+  --cream: #faf9f4;
+  --white: #ffffff;
+  --text: #24352e;
+  --muted: #82918a;
+  --border: #e5ebe7;
+  --shadow: 0 8px 30px rgba(20,65,48,.07);
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: Arial, sans-serif;
+  font-family: 'DM Sans', sans-serif;
 }
 
 body {
-  background: #f1f5f9;
-  color: #1e293b;
+  background: var(--cream);
+  color: var(--text);
+  min-height: 100vh;
 }
 
 header {
-  background: #075e45;
+  background: linear-gradient(120deg,#104b3b,#16805d);
   color: white;
-  padding: 25px 15px;
+  padding: 30px 20px;
   text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+header::before {
+  content: "📚";
+  position: absolute;
+  font-size: 150px;
+  opacity: .08;
+  right: 8%;
+  top: -35px;
 }
 
 header h1 {
-  font-size: 25px;
+  font-family: 'Playfair Display',serif;
+  font-size: 29px;
   margin-bottom: 8px;
 }
 
 header p {
-  font-size: 14px;
+  font-size: 13px;
+  margin-top: 5px;
+  opacity: .9;
 }
 
 .container {
-  max-width: 1100px;
+  max-width: 1200px;
   width: 94%;
-  margin: 25px auto;
+  margin: 30px auto;
 }
 
 .card {
   background: white;
-  padding: 22px;
-  border-radius: 12px;
-  margin-bottom: 20px;
-  box-shadow: 0 3px 12px #00000010;
+  padding: 25px;
+  border-radius: 17px;
+  margin-bottom: 22px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  animation: appear .35s ease;
+}
+
+@keyframes appear {
+  from {opacity:0; transform:translateY(10px)}
+  to {opacity:1; transform:translateY(0)}
 }
 
 h2 {
-  color: #075e45;
+  color: var(--dark);
+  font-size: 21px;
   margin-bottom: 18px;
+  font-weight: 800;
 }
 
 h3 {
-  margin-bottom: 10px;
+  color: var(--dark);
+  font-size: 16px;
+  margin-bottom: 9px;
+}
+
+p {
+  line-height: 1.6;
 }
 
 input, select {
   width: 100%;
-  padding: 12px;
-  margin: 7px 0 13px;
-  border: 1px solid #cbd5e1;
-  border-radius: 7px;
+  padding: 13px 15px;
+  margin: 8px 0 14px;
+  background: #fbfcfb;
+  border: 1px solid #dce6df;
+  border-radius: 9px;
   outline: none;
+  font-size: 14px;
 }
 
-input:focus {
-  border-color: #087653;
+input:focus, select:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(18,107,80,.1);
 }
 
 button {
-  background: #087653;
+  background: var(--green);
   color: white;
   border: none;
-  padding: 11px 16px;
-  border-radius: 7px;
+  padding: 12px 17px;
+  border-radius: 9px;
   cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
   margin: 4px;
+  transition: .25s;
 }
 
 button:hover {
-  background: #064e3b;
+  background: var(--dark);
+  transform: translateY(-2px);
 }
 
 button:disabled {
-  background: #94a3b8;
+  background: #aabbb1;
   cursor: not-allowed;
+  transform: none;
 }
 
-.danger {
-  background: #dc2626;
-}
+.danger { background: #dc5555; }
+.danger:hover { background: #b83232; }
 
-.secondary {
-  background: #64748b;
-}
+.secondary { background: #718078; }
+.secondary:hover { background: #4b5d53; }
 
 .hidden {
   display: none !important;
@@ -107,94 +159,187 @@ button:disabled {
 .menu {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 15px;
+  gap: 9px;
+  margin-bottom: 12px;
+}
+
+.menu button {
+  background: var(--light);
+  color: var(--dark);
+}
+
+.menu button:hover {
+  background: var(--green);
+  color: white;
 }
 
 .book-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-  gap: 15px;
+  grid-template-columns: repeat(auto-fit,minmax(210px,1fr));
+  gap: 18px;
 }
 
 .book {
   background: white;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
+  border-radius: 14px;
   padding: 17px;
+  transition: .3s;
+}
+
+.book:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 25px rgba(20,65,48,.12);
+  border-color: #b5d8c5;
+}
+
+.book-cover {
+  height: 145px;
+  background: linear-gradient(135deg,#e9f4ee,#c9e2d2);
   border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 48px;
+  margin-bottom: 15px;
 }
 
 .book h3 {
-  color: #075e45;
+  line-height: 1.4;
 }
 
 .book p {
-  margin: 7px 0;
-  font-size: 14px;
+  color: var(--muted);
+  font-size: 13px;
+  margin: 6px 0;
 }
 
 .table-wrap {
-  width: 100%;
   overflow-x: auto;
+  width: 100%;
+  border-radius: 10px;
 }
 
 table {
   width: 100%;
-  min-width: 600px;
+  min-width: 580px;
   border-collapse: collapse;
 }
 
-th, td {
-  padding: 12px;
-  border-bottom: 1px solid #e2e8f0;
+th,td {
+  padding: 13px;
+  border-bottom: 1px solid var(--border);
   text-align: left;
-}
-
-th {
-  background: #e6f4ed;
-  color: #075e45;
-}
-
-.status {
-  font-weight: bold;
-}
-
-.info {
-  background: #e6f4ed;
-  color: #075e45;
-  padding: 12px;
-  border-radius: 8px;
-  margin-bottom: 15px;
-}
-
-.empty {
-  color: #64748b;
-  padding: 15px 0;
-}
-
-footer {
-  text-align: center;
-  padding: 25px;
-  color: #64748b;
   font-size: 13px;
 }
 
-@media(max-width:600px) {
-  header h1 {
-    font-size: 19px;
-  }
+th {
+  background: var(--light);
+  color: var(--dark);
+  font-weight: 800;
+}
 
-  .container {
-    width: 95%;
-  }
+tbody tr:hover {
+  background: #f7fbf8;
+}
 
-  .card {
-    padding: 16px;
-  }
+.status {
+  color: var(--green);
+  font-weight: 800;
+}
 
-  button {
-    padding: 10px 12px;
-  }
+.info {
+  background: var(--light);
+  color: var(--dark);
+  padding: 13px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  border-left: 4px solid var(--green);
+  font-size: 14px;
+}
+
+.empty {
+  color: var(--muted);
+  padding: 20px 0;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(150px,1fr));
+  gap: 13px;
+  margin-bottom: 20px;
+}
+
+.stat {
+  background: var(--light);
+  padding: 18px;
+  border-radius: 12px;
+}
+
+.stat strong {
+  display: block;
+  font-size: 25px;
+  color: var(--dark);
+}
+
+.stat span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+#loginPage {
+  max-width: 450px;
+  margin: 40px auto;
+  padding: 30px;
+}
+
+#loginPage h2 {
+  text-align: center;
+}
+
+#loginPage .login-subtitle {
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+  margin-bottom: 20px;
+}
+
+#loginPage button {
+  width: 100%;
+  margin: 6px 0;
+}
+
+#message {
+  margin-top: 12px;
+  color: #dc5555;
+  font-size: 13px;
+}
+
+footer {
+  background: #104b3b;
+  color: white;
+  text-align: center;
+  padding: 25px 15px;
+  margin-top: 50px;
+  font-size: 13px;
+}
+
+@media(max-width:700px) {
+  header h1 {font-size:21px}
+  .container {width:94%; margin:20px auto}
+  .card {padding:17px}
+  h2 {font-size:19px}
+  .book-grid {grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+  .book {padding:11px}
+  .book-cover {height:110px;font-size:38px}
+  .book h3 {font-size:14px}
+  .book button {width:100%;margin:4px 0}
+  .menu button {flex:1}
+  #loginPage {margin:20px auto;padding:22px}
+}
+
+@media(max-width:350px) {
+  .book-grid {grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -207,188 +352,183 @@ footer {
   <p>Membaca Hari Ini, Membangun Masa Depan</p>
 </header>
 
-<div class="container">
+<main class="container">
 
-  <!-- HALAMAN LOGIN -->
-  <section id="loginPage" class="card">
-    <h2>Login Perpustakaan</h2>
+<!-- LOGIN -->
+<section id="loginPage" class="card">
+  <h2>Selamat Datang!</h2>
+  <p class="login-subtitle">Silakan masuk ke perpustakaan digital sekolah.</p>
 
-    <p>Silakan login untuk mengakses perpustakaan digital.</p>
+  <label>Email</label>
+  <input type="email" id="email" placeholder="Masukkan email">
 
-    <input type="email" id="email" placeholder="Masukkan Email">
+  <label>Password</label>
+  <input type="password" id="password" placeholder="Masukkan password">
 
-    <input type="password" id="password"
-      placeholder="Masukkan Password">
+  <button onclick="login()">Masuk ke Akun</button>
+  <button class="secondary" onclick="register()">Daftar Akun Pembaca</button>
 
-    <button onclick="login()">Login</button>
-    <button class="secondary" onclick="register()">
-      Daftar Pembaca
-    </button>
+  <p id="message"></p>
+</section>
 
-    <p id="message"></p>
-  </section>
+<!-- DASHBOARD -->
+<section id="dashboard" class="hidden">
 
-  <!-- DASHBOARD -->
-  <section id="dashboard" class="hidden">
+  <div class="card">
+    <h2 id="welcome">Dashboard</h2>
+    <div id="roleInfo" class="info"></div>
+    <button class="danger" onclick="logout()">Keluar</button>
+  </div>
+
+  <!-- ADMIN -->
+  <section id="adminMenu" class="hidden">
 
     <div class="card">
-      <h2 id="welcome">Dashboard</h2>
-      <div class="info" id="roleInfo"></div>
-      <button class="danger" onclick="logout()">Logout</button>
+      <h2>Dashboard Administrator</h2>
+
+      <div class="stats">
+        <div class="stat">
+          <strong id="totalBooks">0</strong>
+          <span>Total Judul Buku</span>
+        </div>
+        <div class="stat">
+          <strong id="totalLoans">0</strong>
+          <span>Total Peminjaman</span>
+        </div>
+        <div class="stat">
+          <strong id="totalMembers">0</strong>
+          <span>Total Anggota</span>
+        </div>
+      </div>
+
+      <div class="menu">
+        <button onclick="showSection('bookSection')">📚 Kelola Buku</button>
+        <button onclick="showSection('loanSection')">📋 Peminjaman</button>
+        <button onclick="showSection('memberSection')">👥 Anggota</button>
+      </div>
     </div>
 
-    <!-- DASHBOARD ADMIN -->
-    <section id="adminMenu" class="hidden">
+    <!-- KELOLA BUKU -->
+    <div id="bookSection" class="card">
+      <h2>Manajemen Koleksi Buku</h2>
 
-      <div class="card">
-        <h2>Panel Administrator</h2>
+      <input type="hidden" id="bookId">
 
-        <div class="menu">
-          <button onclick="showSection('bookSection')">
-            Kelola Buku
-          </button>
+      <label>Judul Buku</label>
+      <input type="text" id="bookTitle" placeholder="Masukkan judul buku">
 
-          <button onclick="showSection('loanSection')">
-            Data Peminjaman
-          </button>
+      <label>Penulis</label>
+      <input type="text" id="bookAuthor" placeholder="Nama penulis">
 
-          <button onclick="showSection('memberSection')">
-            Data Anggota
-          </button>
-        </div>
+      <label>Kategori</label>
+      <input type="text" id="bookCategory" placeholder="Kategori buku">
+
+      <label>Stok</label>
+      <input type="number" id="bookStock" min="0" placeholder="Jumlah stok">
+
+      <button onclick="saveBook()">Simpan Buku</button>
+      <button class="secondary" onclick="clearBookForm()">Reset Form</button>
+
+      <hr style="margin:22px 0;border:0;border-top:1px solid #e5ebe7">
+
+      <h2>Daftar Koleksi Buku</h2>
+      <div id="adminBooks" class="book-grid"></div>
+    </div>
+
+    <!-- PEMINJAMAN -->
+    <div id="loanSection" class="card hidden">
+      <h2>Data Peminjaman Buku</h2>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Nama Pembaca</th>
+              <th>Judul Buku</th>
+              <th>Status</th>
+              <th>Tanggal</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="loanData"></tbody>
+        </table>
       </div>
+    </div>
 
-      <!-- KELOLA BUKU -->
-      <div id="bookSection" class="card">
-        <h2>Manajemen Buku</h2>
+    <!-- ANGGOTA -->
+    <div id="memberSection" class="card hidden">
+      <h2>Data Anggota Perpustakaan</h2>
 
-        <input type="hidden" id="bookId">
-
-        <label>Judul Buku</label>
-        <input type="text" id="bookTitle"
-          placeholder="Masukkan judul buku">
-
-        <label>Nama Penulis</label>
-        <input type="text" id="bookAuthor"
-          placeholder="Masukkan nama penulis">
-
-        <label>Kategori Buku</label>
-        <input type="text" id="bookCategory"
-          placeholder="Contoh: Pelajaran, Novel, Sejarah">
-
-        <label>Jumlah Stok</label>
-        <input type="number" id="bookStock"
-          placeholder="Masukkan stok buku" min="0">
-
-        <button onclick="saveBook()">Simpan Buku</button>
-        <button class="secondary" onclick="clearBookForm()">
-          Reset
-        </button>
-
-        <hr style="margin:20px 0">
-
-        <h2>Daftar Buku</h2>
-        <div id="adminBooks" class="book-grid"></div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Nama</th>
+              <th>ID Anggota</th>
+              <th>Role</th>
+            </tr>
+          </thead>
+          <tbody id="memberData"></tbody>
+        </table>
       </div>
+    </div>
 
-      <!-- DATA PEMINJAMAN -->
-      <div id="loanSection" class="card hidden">
-        <h2>Data Peminjaman</h2>
-
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Pembaca</th>
-                <th>Buku</th>
-                <th>Status</th>
-                <th>Tanggal</th>
-                <th>Aksi</th>
-              </tr>
-            </thead>
-            <tbody id="loanData"></tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- DATA ANGGOTA -->
-      <div id="memberSection" class="card hidden">
-        <h2>Data Anggota</h2>
-
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Nama</th>
-                <th>ID Anggota</th>
-                <th>Role</th>
-              </tr>
-            </thead>
-            <tbody id="memberData"></tbody>
-          </table>
-        </div>
-      </div>
-
-    </section>
-
-    <!-- DASHBOARD PEMBACA -->
-    <section id="readerMenu" class="hidden">
-
-      <div class="card">
-        <h2>Panel Pembaca</h2>
-
-        <div class="menu">
-          <button onclick="showSection('catalogSection')">
-            Katalog Buku
-          </button>
-
-          <button onclick="showSection('myLoanSection')">
-            Peminjaman Saya
-          </button>
-        </div>
-      </div>
-
-      <!-- KATALOG -->
-      <div id="catalogSection" class="card">
-        <h2>Katalog Buku Perpustakaan</h2>
-        <p>Silakan pilih buku yang ingin dipinjam.</p>
-        <br>
-        <div id="readerBooks" class="book-grid"></div>
-      </div>
-
-      <!-- RIWAYAT PEMINJAMAN -->
-      <div id="myLoanSection" class="card hidden">
-        <h2>Riwayat Peminjaman Saya</h2>
-
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Judul Buku</th>
-                <th>Status</th>
-                <th>Tanggal Pengajuan</th>
-              </tr>
-            </thead>
-            <tbody id="myLoanData"></tbody>
-          </table>
-        </div>
-      </div>
-
-    </section>
   </section>
 
-</div>
+  <!-- PEMBACA -->
+  <section id="readerMenu" class="hidden">
+
+    <div class="card">
+      <h2>Dashboard Pembaca</h2>
+      <div class="menu">
+        <button onclick="showSection('catalogSection')">📚 Katalog Buku</button>
+        <button onclick="showSection('myLoanSection')">📋 Peminjaman Saya</button>
+      </div>
+    </div>
+
+    <!-- KATALOG -->
+    <div id="catalogSection" class="card">
+      <h2>Katalog Perpustakaan</h2>
+      <p style="color:#82918a;margin-bottom:18px">
+        Temukan buku favoritmu dan ajukan peminjaman.
+      </p>
+      <div id="readerBooks" class="book-grid"></div>
+    </div>
+
+    <!-- RIWAYAT -->
+    <div id="myLoanSection" class="card hidden">
+      <h2>Riwayat Peminjaman Saya</h2>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Judul Buku</th>
+              <th>Status</th>
+              <th>Tanggal Pengajuan</th>
+            </tr>
+          </thead>
+          <tbody id="myLoanData"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </section>
+
+</section>
+
+</main>
 
 <footer>
-  © 2026 Perpustakaan Digital
-  SMK Muhammadiyah 1 Muntilan
+  <p>© 2026 Perpustakaan Digital</p>
+  <p>SMK Muhammadiyah 1 Muntilan</p>
 </footer>
 
 <script>
 
-// =====================================
+// ========================================
 // 1. KONFIGURASI SUPABASE
-// =====================================
+// ========================================
 
 const SUPABASE_URL =
 "https://yokpuuahkvwfrlcxdlzx.supabase.co";
@@ -405,13 +545,13 @@ let currentUser = null;
 let currentRole = null;
 
 
-// =====================================
-// 2. REGISTRASI PEMBACA
-// =====================================
+// ========================================
+// 2. REGISTRASI
+// ========================================
 
 async function register() {
 
-  const email = document.getElementById("email").value;
+  const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value;
 
   if (!email || !password) {
@@ -424,7 +564,7 @@ async function register() {
     return;
   }
 
-  const { data, error } = await db.auth.signUp({
+  const {data,error} = await db.auth.signUp({
     email: email,
     password: password
   });
@@ -434,23 +574,21 @@ async function register() {
     return;
   }
 
-  alert(
-    "Registrasi berhasil. Silakan cek email jika konfirmasi email diaktifkan."
-  );
-
   if (data.session) {
     await loadDashboard(data.user);
+  } else {
+    alert("Pendaftaran berhasil. Silakan cek email untuk konfirmasi jika diminta.");
   }
 }
 
 
-// =====================================
+// ========================================
 // 3. LOGIN
-// =====================================
+// ========================================
 
 async function login() {
 
-  const email = document.getElementById("email").value;
+  const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value;
 
   if (!email || !password) {
@@ -458,7 +596,7 @@ async function login() {
     return;
   }
 
-  const { data, error } = await db.auth.signInWithPassword({
+  const {data,error} = await db.auth.signInWithPassword({
     email: email,
     password: password
   });
@@ -472,22 +610,22 @@ async function login() {
 }
 
 
-// =====================================
+// ========================================
 // 4. MEMUAT DASHBOARD
-// =====================================
+// ========================================
 
 async function loadDashboard(user) {
 
   currentUser = user;
 
-  const { data: profile, error } = await db
+  const {data:profile,error} = await db
     .from("profiles")
-    .select("full_name, role")
-    .eq("id", user.id)
+    .select("full_name,role")
+    .eq("id",user.id)
     .single();
 
   if (error || !profile) {
-    alert("Profil belum tersedia. Silakan hubungi admin.");
+    alert("Profil tidak ditemukan. Hubungi administrator.");
     await db.auth.signOut();
     currentUser = null;
     return;
@@ -499,10 +637,10 @@ async function loadDashboard(user) {
   document.getElementById("dashboard").classList.remove("hidden");
 
   document.getElementById("welcome").innerText =
-    "Selamat Datang, " + (profile.full_name || user.email);
+    "Halo, " + (profile.full_name || user.email);
 
   document.getElementById("roleInfo").innerText =
-    "Anda login sebagai: " + currentRole;
+    "Anda masuk sebagai " + currentRole;
 
   if (currentRole === "admin") {
 
@@ -534,9 +672,9 @@ async function loadDashboard(user) {
 }
 
 
-// =====================================
+// ========================================
 // 5. LOGOUT
-// =====================================
+// ========================================
 
 async function logout() {
 
@@ -549,11 +687,11 @@ async function logout() {
 }
 
 
-// =====================================
-// 6. NAVIGASI HALAMAN
-// =====================================
+// ========================================
+// 6. NAVIGASI
+// ========================================
 
-function showSection(sectionId) {
+function showSection(id) {
 
   const sections = [
     "bookSection",
@@ -563,21 +701,21 @@ function showSection(sectionId) {
     "myLoanSection"
   ];
 
-  sections.forEach(id => {
-    document.getElementById(id).classList.add("hidden");
+  sections.forEach(section => {
+    document.getElementById(section).classList.add("hidden");
   });
 
-  document.getElementById(sectionId).classList.remove("hidden");
+  document.getElementById(id).classList.remove("hidden");
 }
 
 
-// =====================================
-// 7. MENAMPILKAN DATA BUKU
-// =====================================
+// ========================================
+// 7. MENAMPILKAN BUKU
+// ========================================
 
 async function loadBooks() {
 
-  const { data, error } = await db
+  const {data,error} = await db
     .from("books")
     .select("*")
     .order("title");
@@ -593,7 +731,9 @@ async function loadBooks() {
   adminBooks.innerHTML = "";
   readerBooks.innerHTML = "";
 
-  if (!data.length) {
+  document.getElementById("totalBooks").innerText = data.length;
+
+  if (data.length === 0) {
     adminBooks.innerHTML = '<p class="empty">Belum ada buku.</p>';
     readerBooks.innerHTML = '<p class="empty">Belum ada buku.</p>';
     return;
@@ -605,19 +745,14 @@ async function loadBooks() {
 
       adminBooks.innerHTML += `
         <div class="book">
+          <div class="book-cover">📖</div>
           <h3>${escapeHTML(book.title)}</h3>
           <p>Penulis: ${escapeHTML(book.author || "-")}</p>
           <p>Kategori: ${escapeHTML(book.category || "-")}</p>
           <p>Stok: ${book.stock}</p>
 
-          <button onclick="editBook(${book.id})">
-            Edit
-          </button>
-
-          <button class="danger"
-            onclick="deleteBook(${book.id})">
-            Hapus
-          </button>
+          <button onclick="editBook(${book.id})">Edit</button>
+          <button class="danger" onclick="deleteBook(${book.id})">Hapus</button>
         </div>
       `;
 
@@ -625,10 +760,11 @@ async function loadBooks() {
 
       readerBooks.innerHTML += `
         <div class="book">
+          <div class="book-cover">📖</div>
           <h3>${escapeHTML(book.title)}</h3>
           <p>Penulis: ${escapeHTML(book.author || "-")}</p>
           <p>Kategori: ${escapeHTML(book.category || "-")}</p>
-          <p>Stok: ${book.stock}</p>
+          <p>Stok tersedia: ${book.stock}</p>
 
           <button
             onclick="borrowBook(${book.id})"
@@ -641,36 +777,33 @@ async function loadBooks() {
     }
 
   });
+
 }
 
 
-// =====================================
-// 8. TAMBAH DAN EDIT BUKU
-// =====================================
+// ========================================
+// 8. SIMPAN BUKU
+// ========================================
 
 async function saveBook() {
 
-  if (currentRole !== "admin") {
-    alert("Akses ditolak!");
-    return;
-  }
+  if (currentRole !== "admin") return;
 
   const id = document.getElementById("bookId").value;
-
   const title = document.getElementById("bookTitle").value.trim();
   const author = document.getElementById("bookAuthor").value.trim();
   const category = document.getElementById("bookCategory").value.trim();
-  const stockValue = document.getElementById("bookStock").value;
+  const stockInput = document.getElementById("bookStock").value;
 
-  if (!title || stockValue === "") {
-    alert("Judul dan stok buku wajib diisi!");
+  if (!title || stockInput === "") {
+    alert("Judul dan stok wajib diisi!");
     return;
   }
 
-  const stock = Number(stockValue);
+  const stock = Number(stockInput);
 
   if (!Number.isInteger(stock) || stock < 0) {
-    alert("Stok harus berupa bilangan bulat minimal 0!");
+    alert("Stok harus bilangan bulat minimal 0!");
     return;
   }
 
@@ -684,7 +817,7 @@ async function saveBook() {
   let result;
 
   if (id) {
-    result = await db.from("books").update(book).eq("id", id);
+    result = await db.from("books").update(book).eq("id",id);
   } else {
     result = await db.from("books").insert(book);
   }
@@ -694,25 +827,25 @@ async function saveBook() {
     return;
   }
 
-  alert("Data buku berhasil disimpan!");
+  alert("Buku berhasil disimpan!");
 
   clearBookForm();
   await loadBooks();
 }
 
 
-// =====================================
-// 9. MENGEDIT BUKU
-// =====================================
+// ========================================
+// 9. EDIT BUKU
+// ========================================
 
 async function editBook(id) {
 
   if (currentRole !== "admin") return;
 
-  const { data, error } = await db
+  const {data,error} = await db
     .from("books")
     .select("*")
-    .eq("id", id)
+    .eq("id",id)
     .single();
 
   if (error) {
@@ -727,27 +860,26 @@ async function editBook(id) {
   document.getElementById("bookStock").value = data.stock;
 
   showSection("bookSection");
-
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  window.scrollTo({top:0,behavior:"smooth"});
 }
 
 
-// =====================================
-// 10. MENGHAPUS BUKU
-// =====================================
+// ========================================
+// 10. HAPUS BUKU
+// ========================================
 
 async function deleteBook(id) {
 
   if (currentRole !== "admin") return;
 
-  const yakin = confirm("Yakin ingin menghapus buku ini?");
+  if (!confirm("Apakah kamu yakin ingin menghapus buku ini?")) {
+    return;
+  }
 
-  if (!yakin) return;
-
-  const { error } = await db
+  const {error} = await db
     .from("books")
     .delete()
-    .eq("id", id);
+    .eq("id",id);
 
   if (error) {
     alert(error.message);
@@ -759,9 +891,9 @@ async function deleteBook(id) {
 }
 
 
-// =====================================
-// 11. RESET FORM BUKU
-// =====================================
+// ========================================
+// 11. RESET FORM
+// ========================================
 
 function clearBookForm() {
 
@@ -774,22 +906,17 @@ function clearBookForm() {
 }
 
 
-// =====================================
-// 12. PENGAJUAN PEMINJAMAN
-// =====================================
+// ========================================
+// 12. AJUKAN PINJAMAN
+// ========================================
 
 async function borrowBook(bookId) {
 
-  if (currentRole !== "reader") {
-    alert("Silakan login sebagai pembaca!");
-    return;
-  }
+  if (currentRole !== "reader") return;
 
-  const yakin = confirm("Ajukan peminjaman buku ini?");
+  if (!confirm("Apakah kamu ingin meminjam buku ini?")) return;
 
-  if (!yakin) return;
-
-  const { error } = await db
+  const {error} = await db
     .from("loans")
     .insert({
       user_id: currentUser.id,
@@ -802,21 +929,20 @@ async function borrowBook(bookId) {
     return;
   }
 
-  alert("Pengajuan peminjaman berhasil!");
-
+  alert("Pengajuan berhasil dikirim!");
   await loadMyLoans();
 }
 
 
-// =====================================
+// ========================================
 // 13. DATA PEMINJAMAN ADMIN
-// =====================================
+// ========================================
 
 async function loadLoans() {
 
   if (currentRole !== "admin") return;
 
-  const { data, error } = await db
+  const {data,error} = await db
     .from("loans")
     .select(`
       id,
@@ -825,12 +951,14 @@ async function loadLoans() {
       profiles(full_name),
       books(title)
     `)
-    .order("created_at", { ascending: false });
+    .order("created_at",{ascending:false});
 
   if (error) {
     alert(error.message);
     return;
   }
+
+  document.getElementById("totalLoans").innerText = data.length;
 
   const tbody = document.getElementById("loanData");
   tbody.innerHTML = "";
@@ -848,22 +976,14 @@ async function loadLoans() {
     if (loan.status === "pending") {
 
       action = `
-        <button onclick="approveLoan(${loan.id})">
-          Setujui
-        </button>
-
-        <button class="danger"
-          onclick="rejectLoan(${loan.id})">
-          Tolak
-        </button>
+        <button onclick="approveLoan(${loan.id})">Setujui</button>
+        <button class="danger" onclick="rejectLoan(${loan.id})">Tolak</button>
       `;
 
     } else if (loan.status === "approved") {
 
       action = `
-        <button onclick="returnBook(${loan.id})">
-          Proses Kembali
-        </button>
+        <button onclick="returnBook(${loan.id})">Kembalikan</button>
       `;
 
     }
@@ -879,19 +999,20 @@ async function loadLoans() {
     `;
 
   });
+
 }
 
 
-// =====================================
-// 14. SETUJUI PEMINJAMAN
-// =====================================
+// ========================================
+// 14. SETUJUI PINJAMAN
+// ========================================
 
 async function approveLoan(id) {
 
   if (currentRole !== "admin") return;
 
-  const { error } = await db.rpc("approve_loan", {
-    loan_id: id
+  const {error} = await db.rpc("approve_loan",{
+    loan_id:id
   });
 
   if (error) {
@@ -906,16 +1027,16 @@ async function approveLoan(id) {
 }
 
 
-// =====================================
-// 15. TOLAK PEMINJAMAN
-// =====================================
+// ========================================
+// 15. TOLAK PINJAMAN
+// ========================================
 
 async function rejectLoan(id) {
 
   if (currentRole !== "admin") return;
 
-  const { error } = await db.rpc("reject_loan", {
-    loan_id: id
+  const {error} = await db.rpc("reject_loan",{
+    loan_id:id
   });
 
   if (error) {
@@ -923,26 +1044,23 @@ async function rejectLoan(id) {
     return;
   }
 
-  alert("Pengajuan peminjaman ditolak!");
-
+  alert("Peminjaman ditolak!");
   await loadLoans();
 }
 
 
-// =====================================
-// 16. PENGEMBALIAN BUKU
-// =====================================
+// ========================================
+// 16. KEMBALIKAN BUKU
+// ========================================
 
 async function returnBook(id) {
 
   if (currentRole !== "admin") return;
 
-  const yakin = confirm("Proses pengembalian buku ini?");
+  if (!confirm("Proses pengembalian buku?")) return;
 
-  if (!yakin) return;
-
-  const { error } = await db.rpc("process_return", {
-    loan_id: id
+  const {error} = await db.rpc("process_return",{
+    loan_id:id
   });
 
   if (error) {
@@ -957,15 +1075,15 @@ async function returnBook(id) {
 }
 
 
-// =====================================
-// 17. RIWAYAT PEMINJAMAN PEMBACA
-// =====================================
+// ========================================
+// 17. RIWAYAT PEMBACA
+// ========================================
 
 async function loadMyLoans() {
 
   if (!currentUser) return;
 
-  const { data, error } = await db
+  const {data,error} = await db
     .from("loans")
     .select(`
       id,
@@ -973,8 +1091,8 @@ async function loadMyLoans() {
       created_at,
       books(title)
     `)
-    .eq("user_id", currentUser.id)
-    .order("created_at", { ascending: false });
+    .eq("user_id",currentUser.id)
+    .order("created_at",{ascending:false});
 
   if (error) {
     alert(error.message);
@@ -996,33 +1114,34 @@ async function loadMyLoans() {
       <tr>
         <td>${escapeHTML(loan.books?.title || "-")}</td>
         <td class="status">${escapeHTML(loan.status)}</td>
-        <td>
-          ${new Date(loan.created_at).toLocaleDateString("id-ID")}
-        </td>
+        <td>${new Date(loan.created_at).toLocaleDateString("id-ID")}</td>
       </tr>
     `;
 
   });
+
 }
 
 
-// =====================================
+// ========================================
 // 18. DATA ANGGOTA
-// =====================================
+// ========================================
 
 async function loadMembers() {
 
   if (currentRole !== "admin") return;
 
-  const { data, error } = await db
+  const {data,error} = await db
     .from("profiles")
-    .select("id, full_name, role")
+    .select("id,full_name,role")
     .order("full_name");
 
   if (error) {
     alert(error.message);
     return;
   }
+
+  document.getElementById("totalMembers").innerText = data.length;
 
   const tbody = document.getElementById("memberData");
   tbody.innerHTML = "";
@@ -1038,33 +1157,34 @@ async function loadMembers() {
     `;
 
   });
+
 }
 
 
-// =====================================
-// 19. KEAMANAN TAMPILAN TEKS
-// =====================================
+// ========================================
+// 19. PENGAMAN TEKS
+// ========================================
 
 function escapeHTML(value) {
 
   return String(value ?? "").replace(/[&<>"']/g, char => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#039;"
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#039;"
   })[char]);
 
 }
 
 
-// =====================================
-// 20. CEK LOGIN SAAT HALAMAN DIBUKA
-// =====================================
+// ========================================
+// 20. CEK SESSION
+// ========================================
 
 async function checkSession() {
 
-  const { data, error } = await db.auth.getSession();
+  const {data,error} = await db.auth.getSession();
 
   if (error) {
     console.error(error.message);
