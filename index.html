@@ -1,0 +1,734 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Perpustakaan SMK Muhammadiyah 1 Muntilan</title>
+
+  <!-- SUPABASE -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- CSS -->
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #f1f5f9;
+      color: #1e293b;
+    }
+
+    header {
+      background: #075e45;
+      color: white;
+      padding: 22px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 23px;
+      margin-bottom: 6px;
+    }
+
+    .container {
+      width: 92%;
+      max-width: 1100px;
+      margin: 25px auto;
+    }
+
+    .card {
+      background: white;
+      padding: 22px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 3px 12px #00000010;
+    }
+
+    h2 {
+      color: #075e45;
+      margin-bottom: 16px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      margin: 7px 0 13px;
+      border: 1px solid #cbd5e1;
+      border-radius: 7px;
+    }
+
+    button {
+      background: #087653;
+      color: white;
+      border: none;
+      padding: 11px 17px;
+      border-radius: 7px;
+      cursor: pointer;
+      margin: 4px;
+    }
+
+    button:hover {
+      background: #064e3b;
+    }
+
+    .danger {
+      background: #dc2626;
+    }
+
+    .secondary {
+      background: #64748b;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .menu {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-bottom: 18px;
+    }
+
+    .book-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 15px;
+    }
+
+    .book {
+      border: 1px solid #e2e8f0;
+      padding: 15px;
+      border-radius: 10px;
+      background: #fff;
+    }
+
+    .book h3 {
+      color: #075e45;
+      margin-bottom: 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 600px;
+    }
+
+    th, td {
+      border-bottom: 1px solid #e2e8f0;
+      padding: 12px;
+      text-align: left;
+    }
+
+    th {
+      background: #e6f4ed;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    .status {
+      font-weight: bold;
+      color: #087653;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: #64748b;
+    }
+
+    @media(max-width:600px) {
+      header h1 {
+        font-size: 18px;
+      }
+
+      .container {
+        width: 95%;
+      }
+
+      .card {
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>PERPUSTAKAAN DIGITAL</h1>
+  <p>SMK Muhammadiyah 1 Muntilan</p>
+</header>
+
+<div class="container">
+
+  <!-- HALAMAN LOGIN -->
+  <section id="loginPage" class="card">
+    <h2>Login Perpustakaan</h2>
+
+    <input type="email" id="email" placeholder="Masukkan Email">
+    <input type="password" id="password" placeholder="Masukkan Password">
+
+    <button onclick="login()">Login</button>
+    <button class="secondary" onclick="register()">Daftar Pembaca</button>
+
+    <p id="message"></p>
+  </section>
+
+  <!-- DASHBOARD -->
+  <section id="dashboard" class="hidden">
+
+    <div class="card">
+      <h2 id="welcome">Dashboard</h2>
+      <p id="roleInfo"></p>
+      <button class="danger" onclick="logout()">Logout</button>
+    </div>
+
+    <!-- MENU ADMIN -->
+    <div id="adminMenu" class="hidden">
+      <div class="card">
+        <h2>Panel Admin</h2>
+        <div class="menu">
+          <button onclick="showSection('bookSection')">Kelola Buku</button>
+          <button onclick="showSection('loanSection')">Peminjaman</button>
+          <button onclick="showSection('memberSection')">Anggota</button>
+        </div>
+      </div>
+
+      <!-- KELOLA BUKU -->
+      <div id="bookSection" class="card">
+        <h2>Tambah / Edit Buku</h2>
+
+        <input type="hidden" id="bookId">
+        <input type="text" id="bookTitle" placeholder="Judul Buku">
+        <input type="text" id="bookAuthor" placeholder="Nama Penulis">
+        <input type="text" id="bookCategory" placeholder="Kategori Buku">
+        <input type="number" id="bookStock" placeholder="Jumlah Stok">
+
+        <button onclick="saveBook()">Simpan Buku</button>
+        <button class="secondary" onclick="clearBookForm()">Batal Edit</button>
+
+        <h2 style="margin-top:25px">Daftar Buku</h2>
+        <div id="adminBooks" class="book-grid"></div>
+      </div>
+
+      <!-- PEMINJAMAN -->
+      <div id="loanSection" class="card hidden">
+        <h2>Data Peminjaman</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Pembaca</th>
+                <th>Buku</th>
+                <th>Status</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="loanData"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ANGGOTA -->
+      <div id="memberSection" class="card hidden">
+        <h2>Data Anggota</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Nama</th>
+                <th>Email</th>
+                <th>Role</th>
+              </tr>
+            </thead>
+            <tbody id="memberData"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- MENU PEMBACA -->
+    <div id="readerMenu" class="hidden">
+      <div class="card">
+        <h2>Panel Pembaca</h2>
+        <div class="menu">
+          <button onclick="showSection('catalogSection')">Katalog Buku</button>
+          <button onclick="showSection('myLoanSection')">Peminjaman Saya</button>
+        </div>
+      </div>
+
+      <div id="catalogSection" class="card">
+        <h2>Katalog Buku</h2>
+        <div id="readerBooks" class="book-grid"></div>
+      </div>
+
+      <div id="myLoanSection" class="card hidden">
+        <h2>Riwayat Peminjaman Saya</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Judul Buku</th>
+                <th>Status</th>
+                <th>Tanggal</th>
+              </tr>
+            </thead>
+            <tbody id="myLoanData"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </section>
+</div>
+
+<footer>
+  © 2026 Perpustakaan SMK Muhammadiyah 1 Muntilan
+</footer>
+
+<!-- JAVASCRIPT -->
+<script>
+  // 1. KONFIGURASI SUPABASE
+  const SUPABASE_URL = "MASUKKAN_URL_SUPABASE";
+  const SUPABASE_KEY = "MASUKKAN_ANON_KEY_SUPABASE";
+
+  const db = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+  let currentUser = null;
+  let currentRole = null;
+
+  // 2. REGISTRASI PEMBACA
+  async function register() {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    if (!email || !password) {
+      alert("Email dan password harus diisi!");
+      return;
+    }
+
+    const { error } = await db.auth.signUp({
+      email: email,
+      password: password
+    });
+
+    if (error) {
+      alert(error.message);
+    } else {
+      alert("Registrasi berhasil. Silakan login!");
+    }
+  }
+
+  // 3. LOGIN
+  async function login() {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    const { data, error } = await db.auth.signInWithPassword({
+      email: email,
+      password: password
+    });
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
+    await loadDashboard(data.user);
+  }
+
+  // 4. MEMUAT DASHBOARD
+  async function loadDashboard(user) {
+    currentUser = user;
+
+    const { data: profile, error } = await db
+      .from("profiles")
+      .select("full_name, role")
+      .eq("id", user.id)
+      .single();
+
+    if (error || !profile) {
+      alert("Profil tidak ditemukan. Hubungi pustakawan.");
+      await db.auth.signOut();
+      return;
+    }
+
+    currentRole = profile.role;
+
+    document.getElementById("loginPage").classList.add("hidden");
+    document.getElementById("dashboard").classList.remove("hidden");
+
+    document.getElementById("welcome").innerText =
+      "Selamat Datang, " + (profile.full_name || user.email);
+
+    document.getElementById("roleInfo").innerText =
+      "Login sebagai: " + currentRole;
+
+    if (currentRole === "admin") {
+      document.getElementById("adminMenu").classList.remove("hidden");
+      document.getElementById("readerMenu").classList.add("hidden");
+
+      loadBooks();
+      loadLoans();
+      loadMembers();
+    } else {
+      document.getElementById("readerMenu").classList.remove("hidden");
+      document.getElementById("adminMenu").classList.add("hidden");
+
+      loadBooks();
+      loadMyLoans();
+    }
+  }
+
+  // 5. LOGOUT
+  async function logout() {
+    await db.auth.signOut();
+    location.reload();
+  }
+
+  // 6. NAVIGASI MENU
+  function showSection(sectionId) {
+    const sections = [
+      "bookSection",
+      "loanSection",
+      "memberSection",
+      "catalogSection",
+      "myLoanSection"
+    ];
+
+    sections.forEach(id => {
+      document.getElementById(id).classList.add("hidden");
+    });
+
+    document.getElementById(sectionId).classList.remove("hidden");
+  }
+
+  // 7. MENAMPILKAN BUKU
+  async function loadBooks() {
+    const { data, error } = await db
+      .from("books")
+      .select("*")
+      .order("title");
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
+    const adminBooks = document.getElementById("adminBooks");
+    const readerBooks = document.getElementById("readerBooks");
+
+    adminBooks.innerHTML = "";
+    readerBooks.innerHTML = "";
+
+    data.forEach(book => {
+      const adminCard = `
+        <div class="book">
+          <h3>${escapeHTML(book.title)}</h3>
+          <p>Penulis: ${escapeHTML(book.author || "-")}</p>
+          <p>Kategori: ${escapeHTML(book.category || "-")}</p>
+          <p>Stok: ${book.stock}</p>
+          <button onclick="editBook('${book.id}')">Edit</button>
+          <button class="danger" onclick="deleteBook('${book.id}')">Hapus</button>
+        </div>
+      `;
+
+      const readerCard = `
+        <div class="book">
+          <h3>${escapeHTML(book.title)}</h3>
+          <p>Penulis: ${escapeHTML(book.author || "-")}</p>
+          <p>Kategori: ${escapeHTML(book.category || "-")}</p>
+          <p>Stok: ${book.stock}</p>
+          <button
+            onclick="borrowBook('${book.id}')"
+            ${book.stock <= 0 ? "disabled" : ""}>
+            Ajukan Pinjam
+          </button>
+        </div>
+      `;
+
+      adminBooks.innerHTML += adminCard;
+      readerBooks.innerHTML += readerCard;
+    });
+  }
+
+  // 8. MENYIMPAN BUKU
+  async function saveBook() {
+    if (currentRole !== "admin") return;
+
+    const id = document.getElementById("bookId").value;
+
+    const book = {
+      title: document.getElementById("bookTitle").value,
+      author: document.getElementById("bookAuthor").value,
+      category: document.getElementById("bookCategory").value,
+      stock: Number(document.getElementById("bookStock").value)
+    };
+
+    if (!book.title || !Number.isInteger(book.stock) || book.stock < 0) {
+      alert("Isi judul dan stok buku dengan benar!");
+      return;
+    }
+
+    let result;
+
+    if (id) {
+      result = await db.from("books").update(book).eq("id", id);
+    } else {
+      result = await db.from("books").insert(book);
+    }
+
+    if (result.error) {
+      alert(result.error.message);
+      return;
+    }
+
+    alert("Data buku berhasil disimpan!");
+    clearBookForm();
+    loadBooks();
+  }
+
+  // 9. EDIT BUKU
+  async function editBook(id) {
+    const { data, error } = await db
+      .from("books")
+      .select("*")
+      .eq("id", id)
+      .single();
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
+    document.getElementById("bookId").value = data.id;
+    document.getElementById("bookTitle").value = data.title;
+    document.getElementById("bookAuthor").value = data.author || "";
+    document.getElementById("bookCategory").value = data.category || "";
+    document.getElementById("bookStock").value = data.stock;
+
+    showSection("bookSection");
+  }
+
+  // 10. HAPUS BUKU
+  async function deleteBook(id) {
+    if (currentRole !== "admin") return;
+    if (!confirm("Yakin ingin menghapus buku ini?")) return;
+
+    const { error } = await db.from("books").delete().eq("id", id);
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
+    alert("Buku berhasil dihapus!");
+    loadBooks();
+  }
+
+  function clearBookForm() {
+    document.getElementById("bookId").value = "";
+    document.getElementById("bookTitle").value = "";
+    document.getElementById("bookAuthor").value = "";
+    document.getElementById("bookCategory").value = "";
+    document.getElementById("bookStock").value = "";
+  }
+
+  // 11. MENGAJUKAN PEMINJAMAN
+  async function borrowBook(bookId) {
+    if (currentRole !== "reader") return;
+
+    const { error } = await db.from("loans").insert({
+      user_id: currentUser.id,
+      book_id: bookId,
+      status: "pending"
+    });
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
+    alert("Pengajuan peminjaman berhasil!");
+    loadMyLoans();
+  }
+
+  // 12. MENAMPILKAN PEMINJAMAN ADMIN
+  async function loadLoans() {
+    if (currentRole !== "admin") return;
+
+    const { data, error } = await db
+      .from("loans")
+      .select("id, status, created_at, profiles(full_name), books(title)")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
+    const tbody = document.getElementById("loanData");
+    tbody.innerHTML = "";
+
+    data.forEach(loan => {
+      let action = "";
+
+      if (loan.status === "pending") {
+        action = `
+          <button onclick="approveLoan('${loan.id}')">Setujui</button>
+          <button class="danger" onclick="rejectLoan('${loan.id}')">Tolak</button>
+        `;
+      } else if (loan.status === "approved") {
+        action = `<button onclick="returnBook('${loan.id}')">Proses Kembali</button>`;
+      }
+
+      tbody.innerHTML += `
+        <tr>
+          <td>${escapeHTML(loan.profiles?.full_name || "-")}</td>
+          <td>${escapeHTML(loan.books?.title || "-")}</td>
+          <td>${escapeHTML(loan.status)}</td>
+          <td>${action}</td>
+        </tr>
+      `;
+    });
+  }
+
+  // 13. MENYETUJUI PEMINJAMAN
+  async function approveLoan(id) {
+    const { error } = await db.rpc("approve_loan", {
+      loan_id: id
+    });
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
+    alert("Peminjaman disetujui!");
+    loadLoans();
+    loadBooks();
+  }
+
+  // 14. MENOLAK PEMINJAMAN
+  async function rejectLoan(id) {
+    const { error } = await db.rpc("reject_loan", {
+      loan_id: id
+    });
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
+    alert("Peminjaman ditolak!");
+    loadLoans();
+  }
+
+  // 15. PROSES PENGEMBALIAN
+  async function returnBook(id) {
+    const { error } = await db.rpc("process_return", {
+      loan_id: id
+    });
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
+    alert("Buku berhasil dikembalikan!");
+    loadLoans();
+    loadBooks();
+  }
+
+  // 16. RIWAYAT PEMINJAMAN PEMBACA
+  async function loadMyLoans() {
+    if (!currentUser) return;
+
+    const { data, error } = await db
+      .from("loans")
+      .select("id, status, created_at, books(title)")
+      .eq("user_id", currentUser.id)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
+    const tbody = document.getElementById("myLoanData");
+    tbody.innerHTML = "";
+
+    data.forEach(loan => {
+      tbody.innerHTML += `
+        <tr>
+          <td>${escapeHTML(loan.books?.title || "-")}</td>
+          <td class="status">${escapeHTML(loan.status)}</td>
+          <td>${new Date(loan.created_at).toLocaleDateString("id-ID")}</td>
+        </tr>
+      `;
+    });
+  }
+
+  // 17. DATA ANGGOTA
+  async function loadMembers() {
+    if (currentRole !== "admin") return;
+
+    const { data, error } = await db
+      .from("profiles")
+      .select("id, full_name, role");
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
+    const tbody = document.getElementById("memberData");
+    tbody.innerHTML = "";
+
+    data.forEach(member => {
+      tbody.innerHTML += `
+        <tr>
+          <td>${escapeHTML(member.full_name || "-")}</td>
+          <td>${member.id === currentUser.id ? escapeHTML(currentUser.email) : "-"}</td>
+          <td>${escapeHTML(member.role)}</td>
+        </tr>
+      `;
+    });
+  }
+
+  // 18. MENCEGAH HTML DARI DATA PENGGUNA
+  function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, char => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;"
+    })[char]);
+  }
+
+  // 19. CEK SESSION SAAT HALAMAN DIBUKA
+  async function checkSession() {
+    const { data } = await db.auth.getSession();
+
+    if (data.session) {
+      await loadDashboard(data.session.user);
+    }
+  }
+
+  checkSession();
+</script>
+
+</body>
+</html>
